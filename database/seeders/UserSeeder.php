@@ -17,12 +17,12 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->truncate();
 
-        User::factory(1, ['email' => 'admin@admin.com'])->create()->syncRoles(Roles::ADMIN->value);
-        /**
-         *  TO FIX
-         * Method Illuminate\Database\Eloquent\Collection::assignRole does not exist.
- */
-        User::factory(1, ['email' => 'moder@moder.com'])->create()->syncRoles(Roles::MODERATOR->value);
+        $admin = User::factory(1, ['email' => 'admin@admin.com'])->create()->first();
+        $admin->syncRoles(Roles::ADMIN->value);
+
+        $moder = User::factory(1, ['email' => 'moder@moder.com'])->create()->first();
+        $moder->syncRoles(Roles::MODERATOR->value);
+
         User::factory(5)->create();
     }
 }
