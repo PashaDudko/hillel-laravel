@@ -10,8 +10,11 @@ class CategoryFactory extends Factory
 {
     public function definition(): array
     {
+        $title = fake()->word(10);
+
         return [
-            'title' => fake()->word(10),
+            'title' => $title,
+            'slug' => Str::slug($title),
         ];
     }
 }
