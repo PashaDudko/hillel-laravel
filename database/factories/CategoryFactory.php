@@ -10,7 +10,7 @@ class CategoryFactory extends Factory
 {
     public function definition(): array
     {
-        $title = fake()->word(10);
+        $title = fake()->words(2, true);
 
         return [
             'title' => $title,
