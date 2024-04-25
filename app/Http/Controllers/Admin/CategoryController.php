@@ -11,9 +11,9 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::paginate(5);
 
-        return view('admin.categories')->with('categories', $categories);
+        return view('admin/categories/index')->with('categories', $categories);
     }
 
     public function create(): Category
@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-       dd('nbnbnbnbn');
+       return view('admin/categories/edit')->with('category', $category);
     }
 
     public function update(AdminCategoryEditRequest $adminCategoryEditRequest): Category

@@ -4,11 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <h1> CATEGORIES </h1>
-            <button>
-                <a href="{{route('categories.create')}}">
-                    Add new
-                </a>
-            </button>
+            <a class="btn btn-secondary" href="{{route('categories.create')}}">Add new</a>
 
             <table class="table">
                 <thead>
@@ -22,7 +18,7 @@
                 <tbody>
                 @foreach($categories as $category)
                 <tr>
-                    <th scope="row">{{$loop->index +1}}</th>
+                    <th scope="row">{{$category->id}}</th>
                     <td>
                         {{$category->title}}
                     </td>
@@ -42,5 +38,6 @@
                 </tbody>
             </table>
         </div>
+        {{ $categories->links() }}
     </div>
 @endsection
