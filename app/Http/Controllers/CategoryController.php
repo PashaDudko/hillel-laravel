@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -11,6 +10,6 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
 
-        return view('admin.categories')->with('categories', $categories);
+        return view('categories/index')->with('categories', $categories);
     }
 }
