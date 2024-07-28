@@ -31,20 +31,6 @@
                 </div>
             @endif
 
-{{--                @section('content')--}}
-                    <div>
-                        <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                            Select your category!
-                        </div>
-                        <select name="" id="" onchange="window.location.href=this.options[this.selectedIndex].value;">
-                            <option value="" selected disabled hidden>Choose here</option>
-                            @foreach($categories as $category )
-                                <option value="{{ route('categories.show', [$category->id])}}">{{$category->title}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-{{--                @endsection--}}
-
                 <main class="py-4">
                     @yield('content')
                 </main>

@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
@@ -28,7 +30,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('/categories', AdminCategoryController::class)->except('show');
     Route::resource('/products', ProductController::class);
 });
-Route::resource('/categories', CategoryController::class)->except('show');
+Route::resource('/categories', CategoryController::class);//->except('show');
 //Route::get('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/index');
 //Route::post('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/add');
 //Route::put('/admin/categories/{categories}', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/edit');

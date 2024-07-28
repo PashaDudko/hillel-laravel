@@ -12,4 +12,10 @@ class CategoryController extends Controller
 
         return view('categories/index')->with('categories', $categories);
     }
+
+    public function show(Category $category)
+    {
+//        return view('categories/show')->with('$category', $category->load('products'));
+        return view('categories/show');
+    }
 }

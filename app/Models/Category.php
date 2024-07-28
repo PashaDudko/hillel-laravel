@@ -14,4 +14,9 @@ class Category extends Model
         'slug',
         'thumbnail',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
