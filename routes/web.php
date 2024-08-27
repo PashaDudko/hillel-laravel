@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,12 +26,14 @@ Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('h
 Auth::routes();
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin');
 Route::prefix('admin')->group(function () {
     Route::resource('/categories', AdminCategoryController::class)->except('show');
-    Route::resource('/products', ProductController::class);
+    Route::resource('/products', AdminProductController::class);
 });
 Route::resource('/categories', CategoryController::class);//->except('show');
+Route::resource('/products', ProductController::class);//->except('show');
 //Route::get('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/index');
 //Route::post('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/add');
 //Route::put('/admin/categories/{categories}', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/edit');

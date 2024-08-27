@@ -15,7 +15,6 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-//        return view('categories/show')->with('$category', $category->load('products'));
-        return view('categories/show');
+        return view('categories/show', ['title' => $category->title, 'products' => $category->products]);
     }
 }
