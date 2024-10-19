@@ -23,7 +23,7 @@
                         {{$category->title}}
                     </td>
                     <td>
-                        {{$category->thumbnail}}
+                        <img src="{{asset($category->thumbnail)}}" alt="" title="" height="100" width="100">
                     </td>
                     <td>
                         <a href="{{route('categories.edit', $category->id)}}"><i class="fa fa-eye"></i>edit</a> ,

@@ -2,8 +2,12 @@
 
 @section('content')
     <div class="container">
+        https://laracasts.com/discuss/channels/laravel/displaying-images-in-blade-file - оформление картинки!
+        <p>
+        <p>
         <div class="row justify-content-center">
-            <h1> Products refer to <b>{{$title}}</b> category </h1>
+            <img src="{{asset($category->thumbnail)}}" alt="" title="">
+            <h1> Products refer to <b>{{$category->title}}</b> category </h1>
         </div>
         <br>
         <div>
@@ -12,7 +16,7 @@
             </div>
             <select name="" id="" onchange="window.location.href=this.options[this.selectedIndex].value;">
                 <option value="" selected disabled hidden>Choose here</option>
-                @foreach($products as $product )
+                @foreach($category->products as $product )
                     <option value="{{ route('products.show', [$product->id])}}">{{$product->name}}</option>
                 @endforeach
             </select>

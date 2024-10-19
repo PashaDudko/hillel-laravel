@@ -15,6 +15,7 @@ class CategoryFactory extends Factory
         return [
             'title' => $title,
             'slug' => Str::slug($title),
+            'thumbnail' => 'storage/category/default.jpg',
         ];
     }
 }
