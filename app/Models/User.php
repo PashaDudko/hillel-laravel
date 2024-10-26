@@ -25,7 +25,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'birthday',
-        'remember_token',
+        'remember_token', // перевірити чи воно доступне ?
     ];
 
     /**
