@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_without_login')
 
 @section('content')
 <div class="container">
@@ -8,6 +8,11 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+                    <div class="text-center mb-3">
+{{--                        <a href="https://google.com.ua"><i class="fab fa-google"></i></a>--}}
+                        <a href="{{ route('google.redirect') }}" class="btn btn-primary"> Login with Google </a>
+                        <p> OR </p>
+                    </div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

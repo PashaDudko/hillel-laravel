@@ -26,11 +26,11 @@
                         <img src="{{asset($category->thumbnail)}}" alt="" title="" height="100" width="100">
                     </td>
                     <td>
-                        <a href="{{route('categories.edit', $category->id)}}"><i class="fa fa-eye"></i>edit</a> ,
+                        <a href="{{route('categories.edit', $category->id)}}"><i class="fa fa-pen"></i></a>,
                         <form method="POST" action="{{route('categories.destroy', $category->id)}}">
                             @csrf
                             @method('DELETE')
-                            <button>Delete</button>
+                            <button><i class="fa fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>
