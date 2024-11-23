@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 30);
             $table->string('lastname', 30);
+            $table->string('avatar')->default('storage/user/default.jpg');
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->date('birthday')->nullable();

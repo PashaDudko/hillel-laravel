@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug');
-            $table->string('thumbnail')->nullable(true);
+            $table->string('thumbnail')->default('storage/category/default.jpg');
             $table->timestamps();
         });
     }
