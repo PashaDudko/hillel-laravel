@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 30)->unique();
             $table->string('slug', 30)->unique();
             $table->string('description')->unique();
-            $table->integer('category_id')->nullable(true);
+            $table->integer('category_id');
             $table->string('SKU', 10)->unique();
             $table->string('price', 10)->default(1);
             $table->string('discount',2 )->default(0);

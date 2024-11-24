@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Anam\Phpcart\CartServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -184,6 +185,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Cart' => 'Anam\Phpcart\Facades\Cart',
     ])->toArray(),
 
 ];
