@@ -4,66 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a99a97cfb77158f0a62cc690a57e547",
+    "content-hash": "a0a2ca2de5e4dc357908311f53408f7c",
     "packages": [
-        {
-            "name": "anam/lara-phpcart",
-            "version": "v1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/anam-hossain/lara-phpcart.git",
-                "reference": "0e5e99eb37a4bbf37a6361ea99fe50ae026721fd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/anam-hossain/lara-phpcart/zipball/0e5e99eb37a4bbf37a6361ea99fe50ae026721fd",
-                "reference": "0e5e99eb37a4bbf37a6361ea99fe50ae026721fd",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Anam\\Phpcart\\CartServiceProvider"
-                    ],
-                    "aliases": {
-                        "Cart": "Anam\\Phpcart\\Facades\\Cart"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Anam\\Phpcart\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anam hossain",
-                    "email": "enam33@gmail.com"
-                }
-            ],
-            "description": "Laravel php shopping cart",
-            "homepage": "https://github.com/anam-hossain/lara-phpcart",
-            "keywords": [
-                "Laravel cart",
-                "Laravel php cart",
-                "Laravel shopping cart",
-                "cart",
-                "shopping cart"
-            ],
-            "support": {
-                "issues": "https://github.com/anam-hossain/lara-phpcart/issues",
-                "source": "https://github.com/anam-hossain/lara-phpcart/tree/master"
-            },
-            "time": "2019-02-26T01:00:49+00:00"
-        },
         {
             "name": "brick/math",
             "version": "0.11.0",
