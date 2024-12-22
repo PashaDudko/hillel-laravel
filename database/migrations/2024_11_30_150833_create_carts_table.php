@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
+            $table->uuid();//ToDo add index
             $table->integer('user_id')->nullable(true);
             $table->integer('product_id'); //ToDo add delete cascade
+            $table->integer('quantity')->default(1); //ToDo add delete cascade
             $table->string('status', 10)->default('open');
+            $table->string('data')->nullable(true);;
             $table->timestamps();
         });
     }
