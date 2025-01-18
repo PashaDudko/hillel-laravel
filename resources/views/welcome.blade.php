@@ -19,7 +19,11 @@
         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
             @if (Route::has('login'))
                 <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    <img class="rounded-full" width="50" height="50" src="storage/other/empty_cart.jpg" alt="" title="">
+                    @if(Cookie::has('cart'))
+                        <a href="{{route('cart.show')}}"><img class="rounded-full" width="50" height="50" src="storage/other/cart_not_empty.jpg" alt="" title=""></a>
+                    @else
+                        <img class="rounded-full" width="50" height="50" src="storage/other/cart_empty.jpg" alt="" title="">
+                    @endif
                     @auth
                         HI, {{ Auth::user()->name }}!
                         <a href="/profile"><img class="rounded-full" width="50" height="50" src="{{Auth::user()->avatar}}" alt="" title=""></a>

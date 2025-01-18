@@ -5,35 +5,58 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public static function openCart(): Cart
+    public function addToCart(Request $request): JsonResponse     //        https://dev.to/codeanddeploy/laravel-model-create-example-4ko
     {
-//        https://dev.to/codeanddeploy/laravel-model-create-example-4ko
-        $cart = Cart::create([
-            'uuid' => 123,
-            'user_id' => Auth::id(),
-            'product_id' => null,
-        ]);
+        //ToDo добавить валидацию данніх форми
+        if (Cart::isCartInCookies() && $cart = Cart::getCartFromCookies()) {
+            $previousDataArr = unserialize($cart->data);
+            //TODO в корзине может біть нестклько продуктов. Должно біть что-то вроде foreach($request['data' as $item или $k=>$v]
+            $newDataArr = [
+                $request['product_id'] => [
+                    'q' => $request['quantity'], //Подумать, как пользовталеь может сразу заказывать больше 1 шт. См. этот же комент в файле блейд
+                    'p' => $request['price'],
+                ]
+            ];
+            $arr = $previousDataArr + $newDataArr; // https://foxminded.ua/ru/php-add-array-to-array/ !!!!!!
+            $cart->data = serialize($arr);
+            $cart->save();
+        } else {
+            $cart = Cart::create([
+                'uuid' => bin2hex(random_bytes(3)),
+                'user_id' => Auth::id(),
+                'data' => serialize([
+                    $request['product_id'] => [
+                        'q'=> $request['quantity'],
+                        'p' => $request['price'],
+                    ]
+                ]),
+            ]);
+        }
+//        Session::flash('add_to_cart', 'Product is added to cart!'); флеш месседж будет отображаться после отправки формі на фронте
 
-        return $cart;
-    }
-
-    public static function getCart(): ?Cart
-    {
-        return Cart::findOrFail('uuid', session('cart_uuid'));
-    }
-
-    public function addToCart(Request $request)
-    {
-
+        return response()->json(['code' => 200, 'status' => 'success'])->withCookie(cookie('cart', $cart->uuid));
     }
 
     public function showCart()
     {
+        $cart = Cart::getCartFromCookies();
 
+        $cartItems = [];
+
+        foreach (unserialize($cart->data) as $productId => $data) {
+            $cartItems[] = [
+                'product' => Product::find($productId)->name,
+                'quantity' => $data['q'],
+                'price' => $data['p'], // ToDO или не передавать цену в аякс-запросе, а брать ее у продукта. Надо решить
+            ];
+        }
+
+        return view('cart/show', ['cartItems' => $cartItems]);
     }
 
     public function updateCart(Product $product, Request $request)
@@ -42,7 +65,7 @@ class CartController extends Controller
     }
 
     // TODO продумать кейс когда пользователь добавляет товар в корзину (сетится сессия корзины), переходит на страницу корзины и чистит куки-сессию
-    public function deleteCart(Request $request)
+    public function deleteCart(Cart $cart)
     {
 
     }

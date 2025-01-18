@@ -7,7 +7,10 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,12 +39,12 @@ Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::post('/cart', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
-Route::put('/cart/{product}', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart', [CartController::class, 'addToCart'])->name('cart.add');
+Route::put('/cart/', [CartController::class, 'updateCart'])->name('cart.update');
 Route::delete('/cart', [CartController::class, 'deleteCart'])->name('cart.delete');
 
-Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin'); //додати міделвар
+Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin'); //TODO додати міделвар
 Route::prefix('admin')->group(function () { //додати міделвар
     Route::resource('/categories', AdminCategoryController::class)->except('show');
     Route::resource('/products', AdminProductController::class);

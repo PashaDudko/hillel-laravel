@@ -3,10 +3,9 @@
 @section('content')
     <div class="container">
         https://laracasts.com/discuss/channels/laravel/displaying-images-in-blade-file - оформление картинки!
-        <p>
-        <p>
+        <img width="300" height="300" src="{{asset($category->thumbnail)}}" alt="" title="">
         <div class="row justify-content-center">
-            <img src="{{asset($category->thumbnail)}}" alt="" title="">
+
             <h1> Products refer to <b>{{$category->title}}</b> category </h1>
         </div>
         <br>
