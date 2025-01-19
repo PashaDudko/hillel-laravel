@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Response;
@@ -40,9 +41,11 @@ Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'
 Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
 Route::post('/cart', [CartController::class, 'addToCart'])->name('cart.add');
-Route::put('/cart/', [CartController::class, 'updateCart'])->name('cart.update');
 Route::delete('/cart', [CartController::class, 'deleteCart'])->name('cart.delete');
+
+Route::get('/create-order', [OrderController::class, 'create'])->name('order.create');
 
 Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin'); //TODO додати міделвар
 Route::prefix('admin')->group(function () { //додати міделвар

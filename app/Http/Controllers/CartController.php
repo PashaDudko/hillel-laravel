@@ -24,7 +24,7 @@ class CartController extends Controller
             ];
             $arr = $previousDataArr + $newDataArr; // https://foxminded.ua/ru/php-add-array-to-array/ !!!!!!
             $cart->data = serialize($arr);
-            $cart->save();
+            $cart->update(['data' => serialize($arr)]);
         } else {
             $cart = Cart::create([
                 'uuid' => bin2hex(random_bytes(3)),
@@ -50,7 +50,8 @@ class CartController extends Controller
 
         foreach (unserialize($cart->data) as $productId => $data) {
             $cartItems[] = [
-                'product' => Product::find($productId)->name,
+                'product_id' => Product::find($productId)->id,
+                'product_name' => Product::find($productId)->name,
                 'quantity' => $data['q'],
                 'price' => $data['p'], // ToDO или не передавать цену в аякс-запросе, а брать ее у продукта. Надо решить
             ];
@@ -59,9 +60,22 @@ class CartController extends Controller
         return view('cart/show', ['cartItems' => $cartItems]);
     }
 
-    public function updateCart(Product $product, Request $request)
+    public function updateCart(Request $request): JsonResponse
     {
+        // ToDo добавить валидацию если заказано больше едениц чем есть в наличии. Или если заказано отрицательное число едениц товара (в скрипте уже нельзя счетчик количества прокликать меньше 0)
+        $cart = Cart::getCartFromCookies();
 
+        if (!$cart) {
+            return response()->json(['code' => 400, 'status' => 'failed']);
+        }
+        $productId = $request['product_id'];
+        $newQuantity = $request['new_quantity'];
+
+        $data = unserialize($cart->data);
+        $data[$productId]['q'] = $newQuantity;
+        $cart->update(['data' => serialize($data)]);
+
+        return response()->json(['code' => 200, 'status' => 'success']);
     }
 
     // TODO продумать кейс когда пользователь добавляет товар в корзину (сетится сессия корзины), переходит на страницу корзины и чистит куки-сессию

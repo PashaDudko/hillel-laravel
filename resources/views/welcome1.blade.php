@@ -14,7 +14,7 @@
 
 {{--        <script src="/resources/js/cart.js"></script> не понятно, почему если вінести скрипт, например с алертом, в отдельний файл, то перестает работать --}}
         <script>
-            // end ADD TO CART script
+            // ADD TO CART script
             $(document).ready(function(){
                 $('#cart').submit(function(e){
                     e.preventDefault();
@@ -43,17 +43,49 @@
                             }
 
                         },
-                        // error: function(xhr, status, error) {
-                        //
-                        //     iziToast.error({
-                        //         message: 'An error occurred: ' + error,
-                        //         position: 'topRight'
-                        //     });
-                        // }
+                        // error: function(xhr, status, error) {}
                     });
                 })
             })
-            // end ADD TO CART script
+        </script>
+
+        <script>
+            // UPDATE PRODUCT QUANTITY IN CART script
+            function changeProductQuantityInCart(sign) {
+                let current_quantity = Number(document.getElementById("current_quantity").innerHTML);
+                let product_price = Number(document.getElementById("product_price").innerHTML);
+                if (sign == 'plus') {
+                    current_quantity++;
+                } else {
+                    current_quantity--;
+                    if (current_quantity < 0) {
+                        current_quantity = 0;
+                    }
+                }
+                document.getElementById("current_quantity").innerHTML = current_quantity.toString();
+                document.getElementById("new_quantity").value = current_quantity.toString();
+                document.getElementById("total").innerHTML = (current_quantity * product_price).toString();
+            }
+                $(document).ready(function(){
+                    $('#cart-update').submit(function(e){
+                        e.preventDefault();
+                        document.getElementById("total_price").innerHTML = document.getElementById("total").innerHTML;
+                        let form = $('#cart-update')[0];
+                        let data = new FormData(form);
+                        let url = $(this).attr('action')
+
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data: data,
+                            dataType: "JSON",
+                            processData: false,
+                            contentType: false,
+
+                            success: function(response) {},
+                        });
+                    })
+                })
         </script>
 
         <!-- Styles -->
