@@ -44,7 +44,7 @@
             <th scope="row">Total Price: <span id="total_price">{{$item['price']}}</span> $</th>
             </tbody>
         </table>
-        <button class="btn btn-dark" onclick="window.location.href = '/create-order'">Create Order</button>
+        <button class="btn btn-dark" onclick="window.location.href = '/order/create'">Create Order</button>
     </div>
 @endsection
 {{--https://ru.wordpress.org/plugins/wc-quantity-plus-minus-button/--}}

@@ -42,7 +42,7 @@ class CartController extends Controller
         return response()->json(['code' => 200, 'status' => 'success'])->withCookie(cookie('cart', $cart->uuid));
     }
 
-    public function showCart()
+    public function show()
     {
         $cart = Cart::getCartFromCookies();
 
@@ -60,7 +60,7 @@ class CartController extends Controller
         return view('cart/show', ['cartItems' => $cartItems]);
     }
 
-    public function updateCart(Request $request): JsonResponse
+    public function update(Request $request): JsonResponse
     {
         // ToDo добавить валидацию если заказано больше едениц чем есть в наличии. Или если заказано отрицательное число едениц товара (в скрипте уже нельзя счетчик количества прокликать меньше 0)
         $cart = Cart::getCartFromCookies();
@@ -68,6 +68,7 @@ class CartController extends Controller
         if (!$cart) {
             return response()->json(['code' => 400, 'status' => 'failed']);
         }
+
         $productId = $request['product_id'];
         $newQuantity = $request['new_quantity'];
 
@@ -79,7 +80,7 @@ class CartController extends Controller
     }
 
     // TODO продумать кейс когда пользователь добавляет товар в корзину (сетится сессия корзины), переходит на страницу корзины и чистит куки-сессию
-    public function deleteCart(Cart $cart)
+    public function delete(Cart $cart)
     {
 
     }

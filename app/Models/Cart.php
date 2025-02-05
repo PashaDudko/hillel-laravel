@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Cookie;
 use App\Enums\Cart as CartEnum;
 
@@ -37,5 +38,10 @@ class Cart extends Model
     public static function isCartInCookies(): bool
     {
         return Cookie::has('cart');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

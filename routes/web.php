@@ -40,12 +40,13 @@ Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
-Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
+Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
 Route::post('/cart', [CartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart', [CartController::class, 'deleteCart'])->name('cart.delete');
+Route::delete('/cart', [CartController::class, 'delete'])->name('cart.delete');
 
-Route::get('/create-order', [OrderController::class, 'create'])->name('order.create');
+Route::get('/order/create', [OrderController::class, 'create'])->middleware('auth')->name('order.create');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin'); //TODO додати міделвар
 Route::prefix('admin')->group(function () { //додати міделвар
