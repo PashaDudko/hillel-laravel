@@ -16,8 +16,6 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('products')->truncate();
-
         $categories = Category::all();
         foreach ($categories as $category) {
             Product::factory(3, ['category_id' => $category->id])->create();

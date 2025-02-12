@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->uuid()->unique();
-            $table->integer('user_id')->nullable(true);
+            $table->unsignedBigInteger('user_id')->nullable(true);
             $table->string('status', 10)->default('open');
             $table->text('data');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

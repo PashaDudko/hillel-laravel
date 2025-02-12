@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class CartController extends Controller
 {
@@ -39,7 +40,11 @@ class CartController extends Controller
         }
 //        Session::flash('add_to_cart', 'Product is added to cart!'); флеш месседж будет отображаться после отправки формі на фронте
 
-        return response()->json(['code' => 200, 'status' => 'success'])->withCookie(cookie('cart', $cart->uuid));
+        $minutes = 60;
+        Cookie::queue(Cookie::make('cart', $cart->uuid, $minutes));
+
+//        return response()->json(['code' => 200, 'status' => 'success'])->withCookie(cookie('cart', $cart->uuid)); // не смог эту куку потом удалить после создания ордера
+        return response()->json(['code' => 200, 'status' => 'success']);
     }
 
     public function show()
@@ -72,11 +77,25 @@ class CartController extends Controller
         $productId = $request['product_id'];
         $newQuantity = $request['new_quantity'];
 
+//        if ($newQuantity == 0) {
+            // ToDo service?
+//        }
+
         $data = unserialize($cart->data);
         $data[$productId]['q'] = $newQuantity;
         $cart->update(['data' => serialize($data)]);
 
         return response()->json(['code' => 200, 'status' => 'success']);
+    }
+
+    public function removeProductFromCart(Product $product)
+    {
+        $cart = Cart::getCartFromCookies();
+        $data = unserialize($cart->data);
+        unset($data[$product->id]);
+        $cart->update(['data' => serialize($data)]);
+
+        return redirect()->back();
     }
 
     // TODO продумать кейс когда пользователь добавляет товар в корзину (сетится сессия корзины), переходит на страницу корзины и чистит куки-сессию

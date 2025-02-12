@@ -11,6 +11,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Total</th>
+                <th scope="col">Delete</th>
             </tr>
             </thead>
             <tbody>
@@ -38,6 +39,13 @@
                     </td>
                     <td>
                         <span id="total">{{$item['price'] * $item['quantity']}}</span> $
+                    </td>
+                    <td>
+                        <form method="POST" action="{{route('cart.product.remove', $item['product_id'])}}">
+                            @csrf
+                            @method('DELETE')
+                            <button><i class="fa fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

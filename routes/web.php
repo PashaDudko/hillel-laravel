@@ -28,6 +28,17 @@ use Illuminate\Http\Request;
 //    return view('welcome');
 //});
 
+Route::get('/s', function () {
+    $a = 100500;
+    return response()->json(['code' => 200, 'status' => 'set cookie'])->withCookie(cookie('aaa', $a));
+});
+
+Route::get('/ss', function () {
+    $cookie = Cookie::expire('aaa') ;
+//    dd(response()->header('ddfdf', '234234'));
+    return response('sdfsdf', 200, ['cookies' => $cookie]);
+});
+
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
@@ -44,6 +55,7 @@ Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
 Route::post('/cart', [CartController::class, 'addToCart'])->name('cart.add');
 Route::delete('/cart', [CartController::class, 'delete'])->name('cart.delete');
+Route::delete('/cart/{product}', [CartController::class, 'removeProductFromCart'])->name('cart.product.remove');
 
 Route::get('/order/create', [OrderController::class, 'create'])->middleware('auth')->name('order.create');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');

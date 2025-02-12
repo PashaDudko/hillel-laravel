@@ -2,14 +2,15 @@
 
 namespace App\Listeners;
 
-use App\Events\UserLogin;
+use App\Events\OrderCreated;
 use App\Models\Cart;
+use App\Enums\Cart as CartEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateCartUserId
+class CloseCart
 {
     /**
      * Create the event listener.
@@ -22,21 +23,22 @@ class UpdateCartUserId
     /**
      * Handle the event.
      */
-    public function handle(UserLogin $event): void
+    public function handle(OrderCreated $event): void
     {
         $cart = Cart::getCartFromCookies();
 
         if ($cart) {
-            $cart->update(['user_id' => Auth::id()]);
+            $cart->update(['status' => CartEnum::CLOSED]);
         }
     }
 
-    public function subscribe(Dispatcher $event): void
-    {
-        $event->listen(
-            UserLogin::class,
-            UpdateCartUserId::class
-        );
-    }
+    //ToDo разобраться зачем этот метод и на что он влияет
+//    public function subscribe(Dispatcher $event): void
+//    {
+//        $event->listen(
+//            OrderCreated::class,
+//            CloseCart::class
+//        );
+//    }
 }
 //https://laravel.su/docs/11.x/events

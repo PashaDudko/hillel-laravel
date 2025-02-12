@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserLogin;
+use App\Events\OrderCreated;
 use App\Models\Cart;
+use App\Models\Order;
 use App\Models\Product;
 use App\Service\CartService;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class OrderController extends Controller
 {
@@ -38,13 +41,31 @@ class OrderController extends Controller
             $orderData[$k]['total'] = $value['q'] * $value['p'];
         }
 
-//        dd($orderData);
-
         return view('orders.create', ['orderData' => $orderData, 'totalPrice' => $totalPrice]);
     }
 
     public function store(Request $request)
     {
-        dd('nbnbnb');
+        if (!$cart = Cart::getCartFromCookies()) {
+            dd('You did not create a cart yet');
+        }
+
+        try {
+            $order = Order::create([
+                'number' => rand(1, 1000),
+                'user_id' => Auth::id(),
+                'data' => $cart->data,
+                'deliver' => $request['deliver'],
+                'payment' => $request['payment'],
+                'comment' => $request['comment'] ?? null,
+            ]);
+
+            OrderCreated::dispatch();
+
+        } catch (\Exception $exception) {
+            dd('Order was not created. ' . $exception->getMessage());
+        }
+
+        return response()->view('orders.congratulation', ['order' => $order]);
     }
 }
