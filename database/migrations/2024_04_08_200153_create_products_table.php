@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('SKU', 10)->unique();
             $table->string('price', 10)->default(1);
             $table->string('discount',2 )->default(0);
-            $table->string('quantity',5 )->default(1);
+            $table->string('in_stock',5 )->default(1);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });

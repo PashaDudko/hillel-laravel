@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Service\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,11 @@ use Illuminate\Support\Facades\Cookie;
 
 class CartController extends Controller
 {
+    public function __construct(public CartService $cartService)
+    {
+
+    }
+
     public function addToCart(Request $request): JsonResponse     //        https://dev.to/codeanddeploy/laravel-model-create-example-4ko
     {
         //ToDo добавить валидацию данніх форми
@@ -54,11 +60,14 @@ class CartController extends Controller
         $cartItems = [];
 
         foreach (unserialize($cart->data) as $productId => $data) {
+            $product = Product::find($productId);
             $cartItems[] = [
-                'product_id' => Product::find($productId)->id,
-                'product_name' => Product::find($productId)->name,
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'slug' => $product->slug,
                 'quantity' => $data['q'],
                 'price' => $data['p'], // ToDO или не передавать цену в аякс-запросе, а брать ее у продукта. Надо решить
+                'in_stock' => $product->in_stock,
             ];
         }
 
@@ -77,19 +86,15 @@ class CartController extends Controller
         $productId = $request['product_id'];
         $newQuantity = $request['new_quantity'];
 
-//        if ($newQuantity == 0) {
-            // ToDo service?
-//        }
+        $message = $this->cartService->updateProductQuantityInCart($cart, $productId, $newQuantity);
 
-        $data = unserialize($cart->data);
-        $data[$productId]['q'] = $newQuantity;
-        $cart->update(['data' => serialize($data)]);
-
-        return response()->json(['code' => 200, 'status' => 'success']);
+        return response()->json(['code' => 200, 'status' => 'success', 'message' => $message]);
     }
 
     public function removeProductFromCart(Product $product)
     {
+//ToDo использовать сервис из метода выше
+        dfsfsffsdfsdf
         $cart = Cart::getCartFromCookies();
         $data = unserialize($cart->data);
         unset($data[$product->id]);

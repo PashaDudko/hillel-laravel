@@ -26,7 +26,7 @@ class ProductFactory extends Factory
             'description' => fake()->words(8, true),
             'SKU' => random_int(100000, 999999),
             'price' => random_int(10, 150),
-            'quantity' => random_int(2, 20),
+            'in_stock' => random_int(2, 10),
         ];
     }
 }

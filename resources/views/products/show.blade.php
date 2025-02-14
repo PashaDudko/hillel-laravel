@@ -12,7 +12,7 @@
             <ul>
                 <li><b>SKU:</b> {{$product->SKU}}</li>
                 <li><b>PRICE:</b> {{$product->price}}</li>
-                <li><b>AVAILABLE:</b> {{$product->quantity}}</li>
+                <li><b>In stock:</b> {{$product->in_stock}}</li>
             </ul>
         </div>
         <form id="cart" method="POST" action="{{ route('cart.add') }} ">
@@ -24,3 +24,41 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        // ADD TO CART script
+        $(document).ready(function(){
+            $('#cart').submit(function(e){
+                e.preventDefault();
+                // alert('utututu');
+                let form = $('#cart')[0];
+                let data = new FormData(form);
+                let url = $(this).attr('action')
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "JSON",
+                    processData: false,
+                    contentType: false,
+
+                    success: function(response) {
+                        if (response.code == 200) {
+                            let successPopup = '<span class="alert alert-success">Product is added to Cart</span>'
+                            $("#res").html(successPopup);
+                            // $("#cartImg").attr("src");
+                            $("#res").delay(2000).fadeOut();
+                            // $("#res").delay(2000).html("");
+                        } else {
+                            console.log('Some error occurred');
+                        }
+
+                    },
+                    // error: function(xhr, status, error) {}
+                });
+            })
+        })
+    </script>
+@endpush
