@@ -14,7 +14,6 @@ class CartController extends Controller
 {
     public function __construct(public CartService $cartService)
     {
-
     }
 
     public function addToCart(Request $request): JsonResponse     //        https://dev.to/codeanddeploy/laravel-model-create-example-4ko
@@ -44,7 +43,6 @@ class CartController extends Controller
                 ]),
             ]);
         }
-//        Session::flash('add_to_cart', 'Product is added to cart!'); флеш месседж будет отображаться после отправки формі на фронте
 
         $minutes = 60;
         Cookie::queue(Cookie::make('cart', $cart->uuid, $minutes));
@@ -93,19 +91,19 @@ class CartController extends Controller
 
     public function removeProductFromCart(Product $product)
     {
-//ToDo использовать сервис из метода выше
-        dfsfsffsdfsdf
         $cart = Cart::getCartFromCookies();
-        $data = unserialize($cart->data);
-        unset($data[$product->id]);
-        $cart->update(['data' => serialize($data)]);
 
-        return redirect()->back();
+        $this->cartService->updateProductQuantityInCart($cart, $product->id);
+
+        return redirect()->back(); // если удаляется последний товар, то надо редірект на главную. + сервис возвращает стринг ( см. метод в Сервисе)
     }
 
     // TODO продумать кейс когда пользователь добавляет товар в корзину (сетится сессия корзины), переходит на страницу корзины и чистит куки-сессию
-    public function delete(Cart $cart)
+    public function delete()
     {
+        $cart = Cart::getCartFromCookies();
+        $this->cartService->closeCartAndClearCookie($cart);
 
+        return redirect()->route('home');
     }
 }

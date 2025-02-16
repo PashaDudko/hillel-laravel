@@ -28,17 +28,6 @@ use Illuminate\Http\Request;
 //    return view('welcome');
 //});
 
-Route::get('/s', function () {
-    $a = 100500;
-    return response()->json(['code' => 200, 'status' => 'set cookie'])->withCookie(cookie('aaa', $a));
-});
-
-Route::get('/ss', function () {
-    $cookie = Cookie::expire('aaa') ;
-//    dd(response()->header('ddfdf', '234234'));
-    return response('sdfsdf', 200, ['cookies' => $cookie]);
-});
-
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\OrderCreated;
 use App\Listeners\CloseCart;
 use App\Listeners\DeleteCartCookie;
+use App\Listeners\SendYourOrderIsCreatedMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,6 +25,7 @@ class EventServiceProvider extends ServiceProvider
         OrderCreated::class => [
             CloseCart::class,
             DeleteCartCookie::class,
+            SendYourOrderIsCreatedMail::class,
         ]
     ];
 
