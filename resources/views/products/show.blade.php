@@ -19,7 +19,7 @@
             @csrf
             <input type="number" class="form-control" hidden name="product_id" value="{{$product->id}}">
             <input type="number" class="form-control" hidden name="price" value="{{$product->price}}">
-            <input type="number" class="form-control" hidden name="quantity" value=1> {{--Подумать, как пользовталеь может сразу заказывать больше 1 шт --}}
+            <input type="number" class="form-control" hidden name="quantity" value=1>
             <button type="submit" class="btn btn-dark" id="cart_submit_btn">ADD TO CART</button>
         </form>
     </div>

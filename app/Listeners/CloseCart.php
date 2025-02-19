@@ -25,7 +25,7 @@ class CloseCart
      */
     public function handle(): void
     {
-        $cart = Cart::getCartFromCookies();
+        $cart = Cart::getUserCartFromCookies();
 
         if ($cart) {
             $cart->update(['status' => CartEnum::CLOSED]);

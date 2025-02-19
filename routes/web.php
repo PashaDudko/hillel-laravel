@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\GoogleLoginController;
@@ -8,10 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,11 +47,12 @@ Route::delete('/cart/{product}', [CartController::class, 'removeProductFromCart'
 Route::get('/order/create', [OrderController::class, 'create'])->middleware('auth')->name('order.create');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
-Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin'); //TODO додати міделвар
-Route::prefix('admin')->group(function () { //додати міделвар
+Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin');
     Route::resource('/categories', AdminCategoryController::class)->except('show');
     Route::resource('/products', AdminProductController::class);
 });
+
 Route::resource('/categories', CategoryController::class);//->except('show');
 Route::resource('/products', ProductController::class);//->except('show');
 //Route::get('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/index');

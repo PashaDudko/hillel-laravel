@@ -14,6 +14,7 @@ class Cart extends Model
 //https://medium.com/@sonamojha2000/submit-form-in-laravel-by-using-ajax-c1888b5d934b
 //https://www.youtube.com/watch?v=Qj9CHRy-aqE
     use HasFactory;
+    public const COOKIE_LIFETIME_MINUTES = 60;
 
     protected $fillable = [
         'uuid',
@@ -23,12 +24,12 @@ class Cart extends Model
     ];
 
     //TODO read https://arjunamrutiya.medium.com/mastering-cookies-in-laravel-440bef76fddb
-//    public static function setCartCookies(string $uuid): void
-//    {
-//        Cookie::make('cart', $uuid, 1);
-//    }
+    public static function setCartCookie(string $uuid): void
+    {
+        Cookie::queue(Cookie::make('cart', $uuid, self::COOKIE_LIFETIME_MINUTES));
+    }
 
-    public static function getCartFromCookies(): ?self
+    public static function getUserCartFromCookies(): ?self
     {
         $uuid = Cookie::get('cart');
 

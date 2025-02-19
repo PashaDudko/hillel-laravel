@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use Cassandra\Date;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
-use function Symfony\Component\String\s;
 
 class GoogleLoginController extends Controller
 {
@@ -22,8 +20,8 @@ class GoogleLoginController extends Controller
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::where('email', $googleUser->email)->first();
-        if(!$user)
-        {
+
+        if (!$user) {
             $user = User::create([
                 'name' => $googleUser->name,
                 'lastname' => $googleUser->name,

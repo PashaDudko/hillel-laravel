@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function create()
     {
 //        UserLogin::dispatch();
-        if (!$cart = Cart::getCartFromCookies()) {
+        if (!$cart = Cart::getUserCartFromCookies()) {
             dd('You did not create cart yet'); // ToDo подумать, что бі сообщение біло одинаковим во всех местах, где проверяется корзина.  И може добавить логирование?
         }
 
@@ -46,7 +46,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        if (!$cart = Cart::getCartFromCookies()) {
+        if (!$cart = Cart::getUserCartFromCookies()) {
             dd('You did not create a cart yet');
         }
 

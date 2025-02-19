@@ -1,5 +1,10 @@
 @extends('welcome1')
 
 @section('content')
-dfsdfsdfsdfsdf
+
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit">LOGOUT!</button>
+        </form>
+
 @endsection
