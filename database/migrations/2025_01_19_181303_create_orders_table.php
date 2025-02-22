@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('payment', 10)->default('cash');
             $table->text('comment')->nullable();
             $table->boolean('is_paid')->default(false);
-            $table->datetime('expects_at')->default('2026-02-16 17:15:21');
+            $table->datetime('expected_at')->default('2026-02-16 17:15:21');
             $table->datetime('delivered_at')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

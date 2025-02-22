@@ -19,7 +19,7 @@ class Order extends Model
         'payment',
         'comment',
         'is_paid',
-        'expects_at',
+        'expected_at',
         'delivered_at',
     ];
 

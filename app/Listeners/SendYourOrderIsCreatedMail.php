@@ -23,9 +23,7 @@ class SendYourOrderIsCreatedMail
      */
     public function handle(OrderCreated $event): void
     {
-        Mail::to('moderator@moderato.com')->send(new YourOrderIsCreated());
-
-        сообщение после отправки почты : "You did not create a cart yet"
-    создать заказ и посомтреть что там не так
+        $email = $event->order->user->email;
+        Mail::to($email)->send(new YourOrderIsCreated($event->order));
     }
 }

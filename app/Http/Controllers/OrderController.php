@@ -10,7 +10,6 @@ use App\Service\CartService;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class OrderController extends Controller
 {
@@ -20,7 +19,6 @@ class OrderController extends Controller
 
     public function create()
     {
-//        UserLogin::dispatch();
         if (!$cart = Cart::getUserCartFromCookies()) {
             dd('You did not create cart yet'); // ToDo подумать, что бі сообщение біло одинаковим во всех местах, где проверяется корзина.  И може добавить логирование?
         }
@@ -58,6 +56,7 @@ class OrderController extends Controller
                 'deliver' => $request['deliver'],
                 'payment' => $request['payment'],
                 'comment' => $request['comment'] ?? null,
+                'expected_at' => '12:15 08-06-2026',
             ]);
 
             OrderCreated::dispatch();

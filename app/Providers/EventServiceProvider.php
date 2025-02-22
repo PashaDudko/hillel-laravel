@@ -24,8 +24,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderCreated::class => [
             CloseCart::class,
-            DeleteCartCookie::class,
             SendYourOrderIsCreatedMail::class,
+            DeleteCartCookie::class,
             //ивент на обновление кол-ва in_stok после заказа
         ]
     ];

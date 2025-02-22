@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -17,9 +18,8 @@ class YourOrderIsCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public Order $order, public string $a = '2025-12-12 23:54:12')
     {
-        //
     }
 
     /**
@@ -40,6 +40,7 @@ class YourOrderIsCreated extends Mailable
     {
         return new Content(
             view: 'mail.thanks',
+            with: [$this->order,],
         );
     }
 
