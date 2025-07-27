@@ -74,6 +74,21 @@
             </div>
         </nav>
 
+{{--        Telegram wiget--}}
+        <div class="row">
+            <div class="col-12 mt-5">
+                <h3>Telegram widget</h3>
+                @unless(@auth()->user()->telegram_username)
+                    <script async src="https://telegram.org/js/telegram-widget.js?22"
+                            data-telegram-login="my_laravel_10_test_bot"
+                            data-size="large"
+                            data-auth-url="http://laravel.test/"
+                            data-request-access="write">
+                    </script>
+                @endunless
+            </div>
+        </div>
+
         <main class="py-4">
             @yield('content')
         </main>
