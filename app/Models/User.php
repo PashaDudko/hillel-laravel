@@ -29,6 +29,7 @@ class User extends Authenticatable
         'phone', //зробить каст, щоб формат був однаковим
         'password',
         'birthday',
+        'telegram_id',
         'remember_token', // перевірити чи воно доступне ?
     ];
 

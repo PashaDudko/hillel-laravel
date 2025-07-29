@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\Auth\Telegram\LoginController as AuthTelegramLoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
@@ -59,3 +60,8 @@ Route::resource('/products', ProductController::class);//->except('show');
 //Route::post('/admin/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/add');
 //Route::put('/admin/categories/{categories}', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/edit');
 //Route::delete('/admin/categories/{categories}', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/delete');
+
+Route::name('callbacks.')->prefix('callbacks')->group(function () {
+    //move google login to auth folder. and route also
+    Route::get('/auth-telegram', AuthTelegramLoginController::class)/*->middleware(['role.admin'])*/->name('auth.telegram');
+});
