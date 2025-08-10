@@ -3,7 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\Auth\Google\LoginController;
 use App\Http\Controllers\Auth\Telegram\LoginController as AuthTelegramLoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -36,8 +36,8 @@ Auth::routes();
 
 Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 
-Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/google/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/google/callback', [LoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
@@ -62,6 +62,5 @@ Route::resource('/products', ProductController::class);//->except('show');
 //Route::delete('/admin/categories/{categories}', [\App\Http\Controllers\Admin\CategoryController::class, 'categories'])->name('admin/categories/delete');
 
 Route::name('callbacks.')->prefix('callbacks')->group(function () {
-    //move google login to auth folder. and route also
     Route::get('/auth-telegram', AuthTelegramLoginController::class)/*->middleware(['role.admin'])*/->name('auth.telegram');
 });
