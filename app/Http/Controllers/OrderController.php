@@ -56,10 +56,10 @@ class OrderController extends Controller
                 'deliver' => $request['deliver'],
                 'payment' => $request['payment'],
                 'comment' => $request['comment'] ?? null,
-                'expected_at' => '12:15 08-06-2026',
+                'expected_at' => now()->modify('+3 days'),
             ]);
 
-            OrderCreated::dispatch();
+            OrderCreated::dispatch($order);
 
         } catch (\Exception $exception) {
             dd('Order was not created. ' . $exception->getMessage());

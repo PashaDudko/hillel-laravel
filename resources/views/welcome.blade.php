@@ -48,6 +48,10 @@
             @endif
 
 {{--                @section('content')--}}
+                <!-- Trigger/Open The Modal -->
+                <button id="myBtn">TEST MODAL POPUP</button>
+                @include('modals.test_modal')
+
                     <div>
                         <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
                             Select your category!
@@ -73,7 +77,7 @@
 {{--                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">--}}
 {{--                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})--}}
 {{--                    </div>--}}
-                </div>
+{{--                </div>--}}
             </div>
         </div>
     </body>

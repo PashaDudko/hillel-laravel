@@ -9,9 +9,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        dd('tyt74urhreu');
         $products = Product::all();
 
-        return view('admin.products')->with('products', $products);
+        return view('admin.products.index')->with('products', $products);
     }
 }

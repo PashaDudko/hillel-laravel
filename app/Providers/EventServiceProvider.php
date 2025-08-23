@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\OrderCreated;
 use App\Listeners\CloseCart;
 use App\Listeners\DeleteCartCookie;
+use App\Listeners\SendNewOrderCreatedTelegramNotification;
 use App\Listeners\SendYourOrderIsCreatedMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
             SendYourOrderIsCreatedMail::class,
             DeleteCartCookie::class,
             //ивент на обновление кол-ва in_stok после заказа
+            SendNewOrderCreatedTelegramNotification::class,
         ]
     ];
 

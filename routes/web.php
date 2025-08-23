@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\Google\LoginController;
 use App\Http\Controllers\Auth\Telegram\LoginController as AuthTelegramLoginController;
@@ -49,9 +50,11 @@ Route::get('/order/create', [OrderController::class, 'create'])->middleware('aut
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('admin');
-    Route::resource('/categories', AdminCategoryController::class)->except('show');
-    Route::resource('/products', AdminProductController::class);
+//    Route::get('/', [AdminController::class, 'index'])->name('admin');
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::resource('/categories', AdminCategoryController::class)->except('show')->names('admin.categories');
+    Route::resource('/products', AdminProductController::class)->names('admin.products');
+    Route::resource('/orders', AdminOrderController::class)->names('admin.orders');
 });
 
 Route::resource('/categories', CategoryController::class);//->except('show');

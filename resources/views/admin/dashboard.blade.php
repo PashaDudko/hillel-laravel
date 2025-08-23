@@ -17,8 +17,7 @@
                 <tr>
                     <th scope="row">1</th>
                     <td>
-{{--                        <a class="nav-link" href="{{ route('categories.index') }}"><b>Categories</b></a>--}}
-                        <a class="nav-link" href="/admin/categories"><b>Categories</b></a>
+                        <a class="nav-link" href="{{ route('admin.categories.index') }}"><b>Categories</b></a>
                     </td>
                     <td>
                         <i> Go to the list of categories. Create new, modify existing, delete unused </i>
@@ -27,7 +26,7 @@
                 <tr>
                     <th scope="row">2</th>
                     <td>
-                        <a class="nav-link" href="{{ route('products.index') }}"><b>Products</b></a>
+                        <a class="nav-link" href="{{ route('admin.products.index') }}"><b>Products</b></a>
                     </td>
                     <td>
                         <i> Go to the list of products. Create new, modify existing, delete unused </i>
@@ -35,7 +34,9 @@
                 </tr>
                 <tr>
                     <th scope="row">3</th>
-                    <td><b>Orders</b></td>
+                    <td>
+                        <a class="nav-link" href="{{ route('admin.orders.index') }}"><b>Orders</b></a>
+                    </td>
                     <td>
                         <i> List of created orders </i>
                     </td>

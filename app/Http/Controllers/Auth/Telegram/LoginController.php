@@ -30,6 +30,6 @@ class LoginController extends Controller
         Auth::user()->update(['telegram_id' => $data->getId()]);
         session()->flash('success', 'You just join our telegram bot!');
 
-        return redirect()->route('admin');
+        return redirect()->route('admin.dashboard');
     }
 }
