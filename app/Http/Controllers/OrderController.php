@@ -59,7 +59,7 @@ class OrderController extends Controller
                 'expected_at' => now()->modify('+3 days'),
             ]);
 
-            OrderCreated::dispatch($order);
+//            OrderCreated::dispatch($order); //reject using this event, because Observer will be used
 
         } catch (\Exception $exception) {
             dd('Order was not created. ' . $exception->getMessage());

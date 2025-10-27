@@ -14,6 +14,8 @@ class NewOrderCreated extends Notification
 {
     use Queueable;
 
+    public array $arr = [];
+
     /**
      * Create a new notification instance.
      */
@@ -30,8 +32,11 @@ class NewOrderCreated extends Notification
 //    public function via(object $notifiable): array
     public function via(User $user): array
     {
+        if ($user->telegram_id) {
+            $this->arr[] = 'telegram';
+        }
 //        return ['mail'];
-        return ['telegram'];
+        return $this->arr;
     }
 
     public function toTelegram(User $notifiable)

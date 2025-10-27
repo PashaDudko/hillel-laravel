@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Auth\Google\LoginController;
+use App\Http\Controllers\Auth\Google\LoginController as AuthGoogleLoginController;
 use App\Http\Controllers\Auth\Telegram\LoginController as AuthTelegramLoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -37,8 +37,8 @@ Auth::routes();
 
 Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 
-Route::get('/google/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.redirect');
-Route::get('/google/callback', [LoginController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/google/redirect', [AuthGoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/google/callback', [AuthGoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update'); //должен был быть метод put, но с ним не работает скрипт и ajax запрос
