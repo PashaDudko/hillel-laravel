@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Notifications\ForAdmin\Telegram;
+namespace App\Notifications\ForAdmin;
 
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\TelegramMessage;
@@ -29,14 +28,13 @@ class NewOrderCreated extends Notification
      *
      * @return array<int, string>
      */
-//    public function via(object $notifiable): array
     public function via(User $user): array
     {
-        if ($user->telegram_id) {
-            $this->arr[] = 'telegram';
-        }
-//        return ['mail'];
-        return $this->arr;
+//        if ($user->telegram_id) {
+//            $this->arr[] = 'telegram';
+//        }
+        return ['telegram'];
+//        return $this->arr;
     }
 
     public function toTelegram(User $notifiable)

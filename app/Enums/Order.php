@@ -4,12 +4,13 @@ namespace App\Enums;
 
 enum Order: string
 {
-    case CLOSED = 'closed';
     case CREATED = 'created';
-    case RECEIVED = 'received';
+    case CANCELLED = 'cancelled';
+    case REJECTED = 'rejected';
     case CONFIRMED = 'confirmed';
     case DELIVERED = 'delivered';
-    case CANCELLED = 'cancelled';
+    case RECEIVED = 'received';
+    case CLOSED = 'closed';
 
 //    public static function values(): array
 //    {

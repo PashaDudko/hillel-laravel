@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Order as OrderEnum;
 use App\Observers\OrderObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,11 @@ class Order extends Model
         'is_paid',
         'expected_at',
         'delivered_at',
+        'received_at',
+    ];
+
+    protected $casts = [
+      'status' => OrderEnum::class,
     ];
 
     public function user(): BelongsTo

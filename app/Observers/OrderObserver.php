@@ -3,14 +3,16 @@
 namespace App\Observers;
 
 use App\Enums\Cart as CartEnum;
-use App\Mail\YourOrderIsCreated;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
-use App\Notifications\ForAdmin\Telegram\NewOrderCreated;
+use App\Notifications\ForAdmin\NewOrderCreated;
+use App\Notifications\ForUser\YourOrderIsCreated;
+use App\Notifications\ForUser\YourOrderStatusIsUpdated;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+
+//use App\Mail\YourOrderIsCreated;
 
 class OrderObserver
 {
@@ -27,8 +29,8 @@ class OrderObserver
         }
 
         //Send email
-        $email = $order->user->email;
-        Mail::to($email)->send(new YourOrderIsCreated($order));
+//        $email = $order->user->email; //commented, because this is already implemented in user notification
+//        Mail::to($email)->send(new YourOrderIsCreated($order));
 
         // Delete cart from cookie
         Cookie::queue(Cookie::forget('cart')); //Todo  what is queue and why deleting throw headers doesn't work?
@@ -36,6 +38,9 @@ class OrderObserver
         // Notify admin
         $admin = User::role('admin')->first();
         Notification::send($admin, new NewOrderCreated($order));
+
+        //Notify user
+        Notification::send($order->user, new YourOrderIsCreated($order));
     }
 
     /**
@@ -43,7 +48,7 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-
+        Notification::send($order->user, new YourOrderStatusIsUpdated($order));
     }
 
     /**

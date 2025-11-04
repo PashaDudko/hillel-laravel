@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Order as OrderEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -45,9 +46,15 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id) // what about Order $order ?
     {
-        //
+        $order = Order::findOrfail($id);
+        $order->update([
+            'status' => OrderEnum::CONFIRMED,
+            'expected_at' => now()->modify('+3 days')->toDateString(),
+        ]);
+
+        return redirect()->route('home');
     }
 
     /**
