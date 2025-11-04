@@ -50,13 +50,12 @@ class OrderController extends Controller
 
         try {
             $order = Order::create([
-                'number' => rand(1, 1000),
+                'number' => chr(rand(65, 90)) . chr(rand(65, 90)) . (new \DateTime())->format('Ymd') . rand(1, 1000),
                 'user_id' => Auth::id(),
                 'data' => $cart->data,
                 'deliver' => $request['deliver'],
                 'payment' => $request['payment'],
                 'comment' => $request['comment'] ?? null,
-                'expected_at' => now()->modify('+3 days'),
             ]);
 
 //            OrderCreated::dispatch($order); //reject using this event, because Observer will be used

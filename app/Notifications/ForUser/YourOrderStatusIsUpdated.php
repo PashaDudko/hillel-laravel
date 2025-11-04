@@ -2,6 +2,7 @@
 
 namespace App\Notifications\ForUser;
 
+use App\Enums\Order as OrderEnum;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -52,17 +53,28 @@ class YourOrderStatusIsUpdated extends Notification
     {
         $url = 'http://laravel.test/profile';
 
-        return TelegramMessage::create()
+        $telegramMessage = TelegramMessage::create()
             // Optional recipient user id.
             ->to($user->telegram_id)
-
             // Markdown supported.
             ->content("Dear $user->name")
             ->line("Your order {$this->order->number} status has been changed to {$this->order->status->name}!")
-            ->line("Expected delivery date: {$this->order->expected_at}")
-            ->line("Will we inform you when it will be delivered")
             ->button('See my order', $url)
             ;
+
+//        match ($this->order->status) {
+//            OrderEnum::CONFIRMED =>
+//            $telegramMessage
+//                ->line("Expected delivery date: {$this->order->expected_at}"),
+//        }
+        if ($this->order->status == OrderEnum::CONFIRMED) {
+            $telegramMessage
+                ->line("Expected delivery date: {$this->order->expected_at}");
+        }
+
+//            ->line("Will we inform you when it will be delivered")
+
+        return $telegramMessage;
     }
 
     /**
