@@ -5,7 +5,7 @@ namespace App\Enums;
 enum Order: string
 {
     case CREATED = 'created';
-    case CANCELLED = 'cancelled';
+    case CANCELED = 'canceled';
     case REJECTED = 'rejected';
     case CONFIRMED = 'confirmed';
     case DELIVERED = 'delivered';

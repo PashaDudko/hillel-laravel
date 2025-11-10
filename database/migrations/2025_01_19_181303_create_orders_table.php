@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('payment', 10)->default('cash');
             $table->text('comment')->nullable();
             $table->boolean('is_paid')->default(false);
-            $table->datetime('expected_at')->nullable();
+            $table->date('expected_at')->nullable();
             $table->datetime('delivered_at')->nullable();
             $table->datetime('received_at')->nullable();
             $table->timestamps();

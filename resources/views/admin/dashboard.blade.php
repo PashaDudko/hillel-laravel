@@ -43,7 +43,9 @@
                 </tr>
                 <tr>
                     <th scope="row">4</th>
-                    <td><b>Users</b></td>
+                    <td>
+                        <a class="nav-link" href="{{ route('admin.users.index') }}"><b>Users</b></a>
+                    </td>
                     <td>
                         <i> List of site users</i>
                     </td>
