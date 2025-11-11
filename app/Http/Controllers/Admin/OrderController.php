@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\Order as OrderEnum;
+use App\Events\ProductsQuantityHasChangedInStock;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
@@ -88,11 +89,13 @@ class OrderController extends Controller
 
         if (!empty($request['estimated_delivery_date'])) { // ToDo write and use Request validation
             $order->update([
-                'expected_at' => $request['estimated_delivery_date']
+                'estimated_delivery_date' => $request['estimated_delivery_date']
             ]);
         }
 
-        OrderCreated::dispatch($order);
+        if (OrderEnum::CONFIRMED->value == $request['status']) {
+            ProductsQuantityHasChangedInStock::dispatch($order);
+        }
 
         return response()->json(['code' => 200, 'status' => 'success', 'message' => 'updated']);
     }

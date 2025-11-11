@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Events\OrderCreated;
+use App\Events\ProductsQuantityHasChangedInStock;
 use App\Listeners\CloseCart;
 use App\Listeners\DeleteCartCookie;
 use App\Listeners\SendNewOrderCreatedTelegramNotification;
 use App\Listeners\SendYourOrderIsCreatedMail;
+use App\Listeners\UpdateProductsQuantityInStock;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,8 +29,10 @@ class EventServiceProvider extends ServiceProvider
             CloseCart::class,
             SendYourOrderIsCreatedMail::class,
             DeleteCartCookie::class,
-            //ивент на обновление кол-ва in_stok после заказа
             SendNewOrderCreatedTelegramNotification::class,
+        ],
+        ProductsQuantityHasChangedInStock::class => [
+            UpdateProductsQuantityInStock::class,
         ]
     ];
 

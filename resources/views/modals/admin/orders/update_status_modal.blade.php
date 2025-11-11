@@ -21,7 +21,7 @@
             </select>
             <br>
             <label for="estimated_delivery_date">Estimated delivery date:</label>
-            <input type="date" name="estimated_delivery_date" id="estimated_delivery_date" class="form-control">
+            <input type="date" name="estimated_delivery_date" value="{{$order->estimated_delivery_date}}" id="estimated_delivery_date" class="form-control">
             <br>
             <button type="submit">Update</button>
         </form>

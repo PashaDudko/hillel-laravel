@@ -67,7 +67,7 @@
                         <span id="current_order_display_status"> {{$order->status}} </span>
                     </td>
                     <td>
-                        <span id="delivery_date">{{$order->expected_at}}</span>
+                        <span id="delivery_date">{{$order->estimated_delivery_date}}</span>
                     </td>
                     <td>
                         {{$order->updated_at}}

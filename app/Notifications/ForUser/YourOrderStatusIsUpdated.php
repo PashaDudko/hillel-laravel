@@ -69,7 +69,7 @@ class YourOrderStatusIsUpdated extends Notification
 //        }
         if ($this->order->status == OrderEnum::CONFIRMED) {
             $telegramMessage
-                ->line("Expected delivery date: {$this->order->expected_at}");
+                ->line("Expected delivery date: {$this->order->estimated_delivery_date}");
         }
 
 //            ->line("Will we inform you when it will be delivered")
