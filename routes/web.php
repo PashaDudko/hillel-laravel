@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\Google\LoginController as AuthGoogleLoginController;
 use App\Http\Controllers\Auth\Telegram\LoginController as AuthTelegramLoginController;
 use App\Http\Controllers\CartController;
@@ -55,6 +56,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
     Route::resource('/categories', AdminCategoryController::class)->except('show')->names('admin.categories');
     Route::resource('/products', AdminProductController::class)->names('admin.products');
     Route::resource('/orders', AdminOrderController::class)->names('admin.orders');
+    Route::resource('/users', AdminUserController::class)->names('admin.users');
 });
 
 Route::resource('/categories', CategoryController::class);//->except('show');

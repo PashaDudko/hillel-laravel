@@ -16,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::paginate(10);
+        $orders = Order::orderBy('id', 'DESC')->paginate(10);
 
         return view('admin.orders.index', compact('orders'));
     }
@@ -83,6 +83,12 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+        $result = false;
+
+        if ($order->status->value != OrderEnum::CONFIRMED->value && OrderEnum::CONFIRMED->value == $request['status']) {
+            $result = true;
+        }
+
         $order->update([
             'status' => OrderEnum::from($request['status'])
         ]);
@@ -97,7 +103,12 @@ class OrderController extends Controller
             ProductsQuantityHasChangedInStock::dispatch($order);
         }
 
-        return response()->json(['code' => 200, 'status' => 'success', 'message' => 'updated']);
+        return response()->json([
+            'code' => 200,
+            'status' => 'success',
+            'message' => 'updated',
+            'display_updated_value_in_stock' => $result
+        ]);
     }
 
     /**

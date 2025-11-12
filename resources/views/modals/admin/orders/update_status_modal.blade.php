@@ -54,6 +54,53 @@
         }
     }
 
+    // function displayUpdatedValueInStock() {
+    //     const quantityElement = document.getElementsByClassName("quantity")[0];
+    //     const value = quantityElement.textContent;
+    //     const parts = value.split('|');
+    //     if (parts.length === 2) {
+    //         const leftPart = parts[0].trim();
+    //         const rightPart = parts[1].trim();
+    //
+    //         const quantity = parseInt(leftPart, 10);
+    //         const inStockMatch = rightPart.match(/\d+/);
+    //
+    //         const inStock = inStockMatch ? parseInt(inStockMatch[0], 10) : 0;
+    //         const result = inStock - quantity;
+    //
+    //         const newRightPart = `(${result})`;
+    //
+    //         quantityElement.textContent = `${leftPart} | ${newRightPart}`;
+    //     }
+    // }
+
+    function displayUpdatedValueInStock() {
+        const elements = document.querySelectorAll('span.quantity');
+
+        if (elements.length === 0) {
+            console.warn("element do found");
+            return;
+        }
+        elements.forEach(element => {
+            const value = element.textContent;
+            const parts = value.split('|');
+            if (parts.length === 2) {
+                const leftPart = parts[0].trim();
+                const rightPart = parts[1].trim();
+
+                const quantity = parseInt(leftPart, 10);
+                const inStockMatch = rightPart.match(/\d+/);
+
+                const inStock = inStockMatch ? parseInt(inStockMatch[0], 10) : 0;
+                const result = inStock - quantity;
+
+                const newRightPart = `(${result})`;
+
+                element.textContent = `${leftPart} | ${newRightPart}`;
+            }
+        });
+    }
+
     const form = document.getElementById('order-update');
     if (form) {
         form.addEventListener('submit', function(event) {
@@ -77,6 +124,9 @@
                         const dateField = document.getElementById('delivery_date');
                         if (document.getElementById('estimated_delivery_date').value) {
                             dateField.textContent = document.getElementById('estimated_delivery_date').value
+                        }
+                        if (response['display_updated_value_in_stock']) {
+                            displayUpdatedValueInStock();
                         }
                         modal.style.display = "none";
                     }

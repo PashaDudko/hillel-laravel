@@ -16,6 +16,10 @@ class Cart extends Model
     use HasFactory;
     public const COOKIE_LIFETIME_MINUTES = 60;
 
+    protected $casts = [
+        'status' => CartEnum::class,
+    ];
+
     protected $fillable = [
         'uuid',
         'user_id',

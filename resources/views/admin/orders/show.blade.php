@@ -30,7 +30,7 @@
                             <span id="product_price">{{$item['price']}}</span>
                         </td>
                         <td>
-                            {{$item['quantity']}} | ({{$item['in_stock']}})
+                            <span class="quantity">{{$item['quantity']}} | ({{$item['in_stock']}})</span>
                         </td>
                         <td>
                             <span class="total" id="{{$item['slug']}}_total">{{$item['price'] * $item['quantity']}}</span> $
