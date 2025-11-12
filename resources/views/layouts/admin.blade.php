@@ -14,7 +14,9 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js" integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @stack('scripts')
 </head>
 <body>
     <div id="app">
@@ -78,7 +80,7 @@
             <div id='alert-success' class="alert alert-success">
                 {{ session('success') }}
                 <script>
-                    alert('AAAAAAA'); {{--add JS to hide this message--}}
+                    alert('You have joined our Telegram!'); {{--add JS to hide this message--}}
                 </script>
             </div>
         @endif
