@@ -54,26 +54,6 @@
         }
     }
 
-    // function displayUpdatedValueInStock() {
-    //     const quantityElement = document.getElementsByClassName("quantity")[0];
-    //     const value = quantityElement.textContent;
-    //     const parts = value.split('|');
-    //     if (parts.length === 2) {
-    //         const leftPart = parts[0].trim();
-    //         const rightPart = parts[1].trim();
-    //
-    //         const quantity = parseInt(leftPart, 10);
-    //         const inStockMatch = rightPart.match(/\d+/);
-    //
-    //         const inStock = inStockMatch ? parseInt(inStockMatch[0], 10) : 0;
-    //         const result = inStock - quantity;
-    //
-    //         const newRightPart = `(${result})`;
-    //
-    //         quantityElement.textContent = `${leftPart} | ${newRightPart}`;
-    //     }
-    // }
-
     function displayUpdatedValueInStock() {
         const elements = document.querySelectorAll('span.quantity');
 
@@ -132,7 +112,6 @@
                     }
                 },
             });
-
         });
     } else {
         console.error('error');
