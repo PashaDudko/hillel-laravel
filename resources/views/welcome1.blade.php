@@ -47,9 +47,9 @@
             @if (Route::has('login'))
                 <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
                     @if(Cookie::has('cart'))
-                        <a href="{{route('cart.show')}}"><img class="rounded-full" width="50" height="50" src="/storage/other/cart_not_empty.jpg" alt="" title=""></a>
+                        <a href="{{route('cart.show')}}"><img id="cart-img" class="rounded-full" width="50" height="50" src="/storage/other/cart_not_empty.jpg" alt="" title=""></a>
                     @else
-                        <img class="rounded-full" width="50" height="50" src="/storage/other/cart_empty.jpg" alt="" title="">
+                        <img id="cart-img" class="rounded-full" width="50" height="50" src="/storage/other/cart_empty.jpg" alt="" title="">
                     @endif
                 </div>
             @endif

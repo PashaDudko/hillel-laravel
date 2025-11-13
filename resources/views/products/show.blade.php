@@ -31,7 +31,6 @@
         $(document).ready(function(){
             $('#cart').submit(function(e){
                 e.preventDefault();
-                // alert('utututu');
                 let form = $('#cart')[0];
                 let data = new FormData(form);
                 let url = $(this).attr('action')
@@ -49,14 +48,14 @@
                             let successPopup = '<span class="alert alert-success">Product is added to Cart</span>'
                             $("#res").html(successPopup);
                             // $("#cartImg").attr("src");
-                            $("#res").delay(2000).fadeOut();
+                            $("#res").delay(2500).fadeOut();
                             // $("#res").delay(2000).html("");
+                            $('#cart-img').attr('src', '/storage/other/cart_not_empty.jpg');
                         } else {
                             console.log('Some error occurred');
                         }
 
                     },
-                    // error: function(xhr, status, error) {}
                 });
             })
         })
