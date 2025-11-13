@@ -29,6 +29,7 @@ class CartController extends Controller
     {
         $cart = Cart::getUserCartFromCookies();
 
+        $totalPrice = 0;
         $cartItems = [];
 
         foreach (unserialize($cart->data) as $productId => $data) {
@@ -38,17 +39,17 @@ class CartController extends Controller
                 'product_name' => $product->name,
                 'slug' => $product->slug,
                 'quantity' => $data['q'],
-                'price' => $data['p'], // ToDO или не передавать цену в аякс-запросе, а брать ее у продукта. Надо решить
+                'price' => $data['p'],
                 'in_stock' => $product->in_stock,
             ];
+            $totalPrice += $data['p'] * $data['q'];
         }
 
-        return view('cart/show', ['cartItems' => $cartItems]);
+        return view('cart/show', ['cartItems' => $cartItems, 'totalPrice' => $totalPrice]);
     }
 
     public function update(Request $request): JsonResponse
     {
-        // ToDo добавить валидацию если заказано больше едениц чем есть в наличии. Или если заказано отрицательное число едениц товара (в скрипте уже нельзя счетчик количества прокликать меньше 0)
         $cart = Cart::getUserCartFromCookies();
 
         if (!$cart) {
