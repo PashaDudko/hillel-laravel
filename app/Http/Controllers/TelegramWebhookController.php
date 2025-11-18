@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\Roles;
 use App\Models\Order;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -36,8 +35,6 @@ class TelegramWebhookController extends Controller
 //        // Припустимо, ви використовуєте метод sendMessage
 //        $this->sendMessage($chatId, $text, $keyboard);
 //    }
-
-
 
     /**
      * Головний метод для обробки вебхуків Telegram.
@@ -101,9 +98,8 @@ class TelegramWebhookController extends Controller
         $callbackData = $callbackQuery->getData();
 
         if (str_starts_with($callbackData, 'CANCEL_')) {
-            $orderNumber = substr($callbackData, 7); // Отримуємо номер замовлення (пропускаємо 'CANCEL_')
+            $orderNumber = substr($callbackData, 7);
 
-            // 1. Створюємо кнопки підтвердження
             $this->sendConfirmationButtons($callbackQuery, $orderNumber);
         }
     }

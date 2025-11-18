@@ -51,7 +51,6 @@ Route::get('/order/create', [OrderController::class, 'create'])->middleware('aut
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
-//    Route::get('/', [AdminController::class, 'index'])->name('admin');
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('/categories', AdminCategoryController::class)->except('show')->names('admin.categories');
     Route::resource('/products', AdminProductController::class)->names('admin.products');
@@ -69,3 +68,5 @@ Route::resource('/products', ProductController::class);//->except('show');
 Route::name('callbacks.')->prefix('callbacks')->group(function () {
     Route::get('/auth-telegram', AuthTelegramLoginController::class)/*->middleware(['role.admin'])*/->name('auth.telegram');
 });
+
+Route::post('/telegram/webhook', [App\Http\Controllers\TelegramWebhookController::class, 'handle']);
