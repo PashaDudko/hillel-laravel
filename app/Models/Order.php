@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Order as OrderEnum;
 use App\Observers\OrderObserver;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,5 +36,34 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function countTotalPrice(): int
+    {
+        $totalPrice = 0;
+
+        foreach (unserialize($this->data) as $data) {
+            $totalPrice += $data['q'] * $data['p'];
+        }
+
+        return $totalPrice;
+    }
+
+    public static function countDailyStatistics(): array
+    {
+        $totalPrice = 0;
+        $query = Order::query()->whereDate('created_at', Carbon::today());
+
+        foreach ($query->get() as $order) {
+            foreach (unserialize($order->data) as $data) {
+                $totalPrice += $data['q'] * $data['p'];
+            };
+        };
+
+        return [
+            'today_orders' => $query->get()->count(),
+            'canceled' => $query->where('status', OrderEnum::CANCELED)->get()->count(),
+            'income' => $totalPrice,
+        ];
     }
 }
