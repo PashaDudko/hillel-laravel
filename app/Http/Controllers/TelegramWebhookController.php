@@ -2,98 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Order as OrderEnum;
 use App\Enums\Roles;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TelegramWebhookController extends Controller
 {
-//    public function handle1(Request $request)
-//    {
-////        \Illuminate\Support\Facades\Log::info('Webhook received!', $request->all());
-////        \Illuminate\Support\Facades\Log::info('ME!!!', Telegram::bot('mybot')->getMe()->toArray());
-//        $this->sendStartMessage();
-//    }
-//
-//    protected function sendStartMessage1(int $chatId, string $firstName)
-//    {
-//        // 1. Створення клавіатури відповідей
-//        $keyboard = \Telegram\Bot\Keyboard\Keyboard::make([
-//            'keyboard' => [
-//                ['My name 🙋‍♂️'] // Кнопка, яка надсилає текст
-//            ],
-//            'resize_keyboard' => true,
-//        ]);
-//
-//        // 2. Надсилання повідомлення з клавіатурою
-//        $text = "Вітаю, {$firstName}! Натисніть кнопку, щоб дізнатися, як я вас бачу.";
-//
-//        // Припустимо, ви використовуєте метод sendMessage
-//        $this->sendMessage($chatId, $text, $keyboard);
-//    }
-
-    /**
-     * Головний метод для обробки вебхуків Telegram.
-     */
-    public function handle(Request $request)
+    public function handle(Request $request): Response
     {
         $update = Telegram::getWebhookUpdate();
 
         if ($update->isType('callback_query')) {
             $this->handleCallbackQuery($update->getCallbackQuery());
         }
+//        \Illuminate\Support\Facades\Log::info('TELEGRAM:  ', $update->getMessage()->toArray());
 
-//        \Illuminate\Support\Facades\Log::info('Bot: ', Telegram::bot('mybot')->getMe()->toArray());
-//        \Illuminate\Support\Facades\Log::info('ME: ', Telegram::getMe()->toArray());
-        \Illuminate\Support\Facades\Log::info('from telegram101:  ', $update->getMessage()->toArray());
-//        \Illuminate\Support\Facades\Log::info('from telegram:  ',['aaa' => $update->getMessage()->getText()]);
-
-        // Перевіряємо, чи це повідомлення (message)
         if ($update->getMessage()) {
             $message = $update->getMessage();
             $chatId = $message->getChat()->getId();
             $text = $message->getText();
-            $firstName = $message->getChat()->getFirstName() ?? 'friend';
-            $user = $this->getUser($message->getFrom()->getId());
+            $user = $this->getUser($message->getChat()->getId());
 
-            // 2. Обробка команди /start
             if ($text === '/start') {
-//                if ($user->hasRole(Roles::ADMIN) ) {
-//                    $this->sendStartMessageForAdmin($chatId);
-                    $this->sendStartMessage($chatId, $user);
-//                } else {
-//                    $this->sendStartMessageForUser($chatId, $firstName);
-//                }
+                $this->sendStartMessage($chatId, $user);
             } elseif ($text === 'Show Order') {
                 $this->showOrder($chatId);
-            } elseif (str_contains($text, 'Order_')) {
+            } elseif (str_starts_with($text, 'Order_')) {
+                $text = substr($text, 6);
                 $this->findOrderByNumber($chatId, $text, $user);
             } elseif ($text === 'Daily Statistics') {
                 $this->showDailyStatistics($chatId);
-            } elseif ($text === 'Cancel Order') {
-                $this->cancelOrder($chatId, $user);
-            }
-
-
-        elseif ($text === 'Name 🙋‍♂️') {
-                $replyText = "Yor name in Telegram is: **{$firstName}**";
-                $this->sendMessage($chatId, $replyText);
-            } elseif ($text === 'test') {
-                $replyText = "Yor name in Telegram is: **{$firstName}**";
-                $this->sendMessage($chatId, $replyText);
             }
         }
 
         return response('OK', 200);
     }
 
-    // ----------------------------------------------------------------
-
-    protected function handleCallbackQuery($callbackQuery)
+    protected function handleCallbackQuery($callbackQuery): void
     {
         $callbackData = $callbackQuery->getData();
 
@@ -102,86 +53,92 @@ class TelegramWebhookController extends Controller
 
             $this->sendConfirmationButtons($callbackQuery, $orderNumber);
         }
+
+        if (str_starts_with($callbackData, 'CONFIRM_CANCEL_')) {
+            $orderNumber = substr($callbackData, 15);
+
+            $chatId = $callbackQuery->getMessage()->getChat()->getId();
+            $messageId = $callbackQuery->getMessage()->getMessageId();
+            $user = $this->getUser($chatId);
+
+            $order = Order::where([
+                ['number', $orderNumber],
+                ['user_id', $user->id],
+            ])->first();
+
+            if ($order) {
+                $order->update(['status' => OrderEnum::CANCELED]);
+            }
+
+            if ($order) {
+                $newText = "✅ ** Your order №$orderNumber** is canceled";
+            } else {
+                $newText = "❌ Some error fails\. Please try again";
+            }
+
+            try {
+                $this->editMessage($chatId, $messageId, $newText);
+            } catch (\Telegram\Bot\Exceptions\TelegramResponseException $e) {
+                    \Illuminate\Support\Facades\Log::warning("See error {$e->getMessage()}");
+            }
+
+            Telegram::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'text' => $order ? "Your order was successfully canceled!" : "Some error fails 😔",
+                'show_alert' => !$order
+            ]);
+        }
+
+        if (str_starts_with($callbackData, 'ABORT_CANCEL_')) {
+            $orderNumber = substr($callbackData, 13);
+            $chatId = $callbackQuery->getMessage()->getChat()->getId();
+            $user = $this->getUser($chatId);
+            $this->findOrderByNumber($chatId, $orderNumber, $user);
+        }
     }
 
     protected function sendConfirmationButtons($callbackQuery, string $orderNumber): void
     {
-        // ID повідомлення та чату для редагування
         $chatId = $callbackQuery->getMessage()->getChat()->getId();
         $messageId = $callbackQuery->getMessage()->getMessageId();
 
-        // Створюємо нові callback_data з повним контекстом
-        $confirmData = 'CONFIRM_CANCEL_' . $orderNumber; // Наприклад: 'CONFIRM_CANCEL_FF12345'
-        $abortData = 'ABORT_CANCEL_' . $orderNumber;     // Наприклад: 'ABORT_CANCEL_FF12345'
+        $text = "Are you really want to cancel order №{$orderNumber} ?";
+
+        $confirmData = 'CONFIRM_CANCEL_' . $orderNumber;
+        $abortData = 'ABORT_CANCEL_' . $orderNumber;
 
         $inlineKeyboard = Keyboard::make()->inline()->row(
-        // Кнопка YES
             [
-                Keyboard::inlineButton(['text' => '✅ Так, скасувати', 'callback_data' => $confirmData]),
-                // Кнопка NO
-                Keyboard::inlineButton(['text' => '❌ Ні, залишити', 'callback_data' => $abortData]),
+                Keyboard::inlineButton(['text' => '✅ Yes', 'callback_data' => $confirmData]),
+                Keyboard::inlineButton(['text' => '❌ No', 'callback_data' => $abortData]),
             ]
         );
 
-        // Редагуємо поточне повідомлення, щоб замінити старі кнопки на нові
-        $this->editMessage($chatId, $messageId, "Ви впевнені, що хочете скасувати замовлення №{$orderNumber}?", $inlineKeyboard);
-
-        // Відповідаємо на callback (щоб прибрати годинник)
-        $callbackQuery->answer('Потрібне підтвердження.');
+        $this->editMessage($chatId, $messageId, $text, $inlineKeyboard);
     }
 
     protected function editMessage(int $chatId, int $messageId, string $text, ?Keyboard $replyMarkup = null): void
     {
         $params = [
             'chat_id' => $chatId,
-            'message_id' => $messageId, // Ключовий параметр для ідентифікації
+            'message_id' => $messageId,
             'text' => $text,
-            'parse_mode' => 'MarkdownV2', // Завжди використовуємо для коректного відображення
+            'parse_mode' => 'MarkdownV2',
         ];
 
         if ($replyMarkup) {
-            // Замінюємо розмітку повністю
             $params['reply_markup'] = $replyMarkup;
         } else {
-            // Якщо $replyMarkup не передано, відправляємо порожню клавіатуру, щоб видалити старі кнопки.
-            $params['reply_markup'] = Keyboard::make()->inline();
+            $params['reply_markup'] = null;
         }
 
-        // Викликаємо метод editMessageText з Telegram API
-        // (або editMessageReplyMarkup, якщо потрібно змінити лише кнопки)
         Telegram::editMessageText($params);
     }
 
     protected function getUser(int $telegramId): User
     {
-//        return User::where('telegram_id', '=', Telegram::getWebhookUpdate()['message']['from']['id'])->first();
         return User::where('telegram_id', $telegramId)->first();
     }
-
-//    private function sendStartMessageForAdmin(int $chatId): void
-//    {
-//        $keyboard = Keyboard::make([
-//            'keyboard' => [
-//                ['Show Order'],
-//                ['Daily Statistics'],
-//                // Додайте інші кнопки адміністратора, якщо потрібно
-//            ],
-//            'resize_keyboard' => true,
-//            'one_time_keyboard' => false,
-//        ]);
-//
-//        $text = "Select admin action :";
-//
-//        try {
-//            $this->sendMessage($chatId, $text, $keyboard);
-//
-//            Log::info("Admin start message sent to ChatID: {$chatId}");
-//
-//        } catch (\Exception $e) {
-//            Log::error("Failed to send admin start message to ChatID: {$chatId}", ['error' => $e->getMessage()]);
-//            // Обробка помилок
-//        }
-//    }
 
     protected function sendStartMessage(int $chatId, User $user): void
     {
@@ -208,50 +165,26 @@ class TelegramWebhookController extends Controller
 
         try {
             $this->sendMessage($chatId, $text, $keyboard);
-
-            Log::info("Admin start message sent to ChatID: {$chatId}");
-
         } catch (\Exception $e) {
             Log::error("Failed to send admin start message to ChatID: {$chatId}", ['error' => $e->getMessage()]);
         }
     }
 
-    /**
-     * Надсилає повідомлення з кнопкою-клавіатурою.
-     */
-//    protected function sendStartMessageForUser(int $chatId, string $firstName): void
-//    {
-//        // 1. Створення клавіатури відповідей
-//        $keyboard = Keyboard::make([
-//            'keyboard' => [
-//                ['Name 🙋‍♂️'] // Кнопка, яка надсилає текст
-//            ],
-//            'resize_keyboard' => true,
-//        ]);
-//
-//        // 2. Надсилання повідомлення з клавіатурою
-//        $text = "Hi, {$firstName}! Click on button";
-//
-//        $this->sendMessage($chatId, $text, $keyboard);
-//    }
-
     protected function showOrder(int $chatId): void
     {
-        $text = "Please provide string\: Order\_*order number* you want to see";
+        $text = "Please provide *number* of order you want to see add add prefix *Order\_* at the beginning";
 
         $this->sendMessage($chatId, $text);
     }
 
-    protected function findOrderByNumber(int $chatId, string $value, User $user): void
+    protected function findOrderByNumber(int $chatId, string $orderNumber, User $user): void
     {
         $keyboard = null;
-
-        $orderNumber = substr($value, 6);
 
         $order = Order::where('number', $orderNumber)->first();
 
         if (!$order) {
-            $text = "Order number {$orderNumber} not found";
+            $text = "Order number {$orderNumber} not found \. Did you add *Order\_* prefix ?";
         } else {
             if ($order->user->isNot($user) && !$user->hasRole(Roles::ADMIN)) {
                 $text = "You have no Order with number {$orderNumber}";
@@ -262,14 +195,14 @@ class TelegramWebhookController extends Controller
                 $text .= "\n*Price*\: {$order->countTotalPrice()} $";
                 $text .= "\n*Date*\: {$order->updated_at->format("d")}\-{$order->updated_at->format("m")}\-{$order->updated_at->format("Y")}, {$order->updated_at->format("H\:i")}";
 
-                if ($order->user->is($user)) {
-//                    $keyboard = Keyboard::make([
-//                        'keyboard' => [
-//                            ['Cancel Order'],
-//                        ],
-//                        'resize_keyboard' => true,
-//                        'one_time_keyboard' => false,
-//                    ]);
+                if ($order->user->is($user) && !in_array($order->status,
+                        [
+                            OrderEnum::REJECTED,
+                            OrderEnum::CANCELED,
+                            OrderEnum::RECEIVED,
+                            OrderEnum::CLOSED,
+                        ]
+                )) {
                     $callbackData = 'CANCEL_' . $orderNumber;
                     $keyboard = Keyboard::make()->inline();
 
@@ -288,25 +221,17 @@ class TelegramWebhookController extends Controller
 
     protected function showDailyStatistics(int $chatId): void
     {
-        ['today_orders' => $todayOrdersCount, 'rejected' => $rejectedCount,'income' => $totalIncome] = Order::countDailyStatistics();
+        ['today_orders' => $todayOrdersCount, 'canceled' => $canceledCount,'expected_revenue' => $expectedRevenue] = Order::countDailyStatistics();
 
         $text = "Statistics on " . now()->format('d') ."\-". now()->format('m') ."\-". now()->format('Y') . "\n";
-        $text .= "\n*Orders total*\: {$todayOrdersCount}";
-        $text .= "\n*Canceled by user*\: {$rejectedCount}";
-        $text .= "\n*Income*\: {$totalIncome} $";
+        $text .= "\n*Orders today*\: {$todayOrdersCount}";
+        $text .= "\n*Canceled by users*\: {$canceledCount}";
+        $text .= "\n*Expected revenue*\: {$expectedRevenue} $";
 
         $this->sendMessage($chatId, $text);
     }
 
-    protected function cancelOrder(int $chatId, User $user): void
-    {
-
-    }
-
-    /**
-     * Обгортка для надсилання повідомлення, використовує Telegram Фасад.
-     */
-    protected function sendMessage(int $chatId, string $text, ?Keyboard $replyMarkup = null)
+    protected function sendMessage(int $chatId, string $text, ?Keyboard $replyMarkup = null): void
     {
         $params = [
             'chat_id' => $chatId,

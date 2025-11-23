@@ -51,19 +51,21 @@ class Order extends Model
 
     public static function countDailyStatistics(): array
     {
-        $totalPrice = 0;
+        $expectedRevenue = 0;
         $query = Order::query()->whereDate('created_at', Carbon::today());
 
         foreach ($query->get() as $order) {
             foreach (unserialize($order->data) as $data) {
-                $totalPrice += $data['q'] * $data['p'];
+                if (!in_array($order->status, [OrderEnum::CANCELED, OrderEnum::REJECTED])) {
+                    $expectedRevenue += $data['q'] * $data['p'];
+                }
             };
         };
 
         return [
             'today_orders' => $query->get()->count(),
             'canceled' => $query->where('status', OrderEnum::CANCELED)->get()->count(),
-            'income' => $totalPrice,
+            'expected_revenue' => $expectedRevenue,
         ];
     }
 }

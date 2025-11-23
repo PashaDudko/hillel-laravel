@@ -3,10 +3,13 @@
 namespace App\Observers;
 
 use App\Enums\Cart as CartEnum;
+use App\Enums\Order as OrderEnum;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\ForAdmin\NewOrderCreated;
+use App\Notifications\ForAdmin\UserHasCanceledOrder;
+use App\Notifications\ForUser\YourOrderDeliveryDateIsUpdated;
 use App\Notifications\ForUser\YourOrderIsCreated;
 use App\Notifications\ForUser\YourOrderStatusIsUpdated;
 use Illuminate\Support\Facades\Cookie;
@@ -48,7 +51,28 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        Notification::send($order->user, new YourOrderStatusIsUpdated($order));
+        $messageTemplate = "We are %s to inform you that your order {$order->number} will be arriving %s than expected.";
+//        $changes = $order->getDirty();
+
+        if ($order->isDirty('status')) {
+            if ($order->status == OrderEnum::CANCELED) {
+                $admin = User::admin()->first();
+                Notification::send($admin, new UserHasCanceledOrder($order));
+            } else {
+                Notification::send($order->user, new YourOrderStatusIsUpdated($order));
+            }
+        }
+
+        if ($order->isDirty('estimated_delivery_date')) {
+            $originalDate = $order->getOriginal('estimated_delivery_date');
+            $newDate = $order->estimated_delivery_date;
+
+            $words = $newDate->greaterThan($originalDate) ? ['HAPPY', 'EARLIER'] : ['REGRET', 'LATER'];
+
+            $message = sprintf($messageTemplate, ...$words);
+
+            Notification::send($order->user, new YourOrderDeliveryDateIsUpdated($order, $message));
+        }
     }
 
     /**
