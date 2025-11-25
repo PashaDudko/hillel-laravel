@@ -50,7 +50,11 @@
                             // $("#cartImg").attr("src");
                             $("#res").delay(2500).fadeOut();
                             // $("#res").delay(2000).html("");
-                            $('#cart-img').attr('src', '/storage/other/cart_not_empty.jpg');
+                            let cartImg = $('#cart-img');
+                            cartImg.attr('src', '/storage/other/cart_not_empty.jpg');
+                            if (cartImg.parent('a[href="/cart"]').length === 0) {
+                                cartImg.wrap('<a href="/cart"></a>');
+                            }
                         } else {
                             console.log('Some error occurred');
                         }

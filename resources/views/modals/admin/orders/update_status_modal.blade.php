@@ -9,7 +9,7 @@
             @csrf
             @method('PUT')
             <label for="status"> Set order status: </label>
-            <select name="status" id="order_status_select" class="form-control">
+            <select name="status" id="order_status_select" class="form-control" onchange="setDeliveryDateRequiredForSomeStatuses()">
                 @foreach($statuses as $name => $value)
                     <option
                         value="{{ $value }}"
@@ -51,6 +51,14 @@
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+    }
+
+    function setDeliveryDateRequiredForSomeStatuses() {
+        const selectElement = document.getElementById('order_status_select');
+        const dateInput = document.getElementById('estimated_delivery_date');
+        if (selectElement.value === 'confirmed') {
+            dateInput.required = true;
         }
     }
 

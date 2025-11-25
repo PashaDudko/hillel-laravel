@@ -20,7 +20,7 @@ class YourOrderDeliveryDateIsUpdated extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public readonly Order $order, public readonly string $message)
+    public function __construct(public readonly string $message)
     {
         //
     }
@@ -47,16 +47,10 @@ class YourOrderDeliveryDateIsUpdated extends Notification
             // Optional recipient user id.
             ->to($user->telegram_id)
             // Markdown supported.
-            ->content("Dear $user->name !")
-            ->line("{$this->message}")
-            ->line("New date is {$this->order->estimated_delivery_date}")
+            ->content("Dear $user->name!")
+            ->line($this->message)
             ->button('See my order', $url)
         ;
-
-        if ($this->order->status == OrderEnum::CONFIRMED) {
-            $telegramMessage
-                ->line("Expected delivery date: {$this->order->estimated_delivery_date}");
-        }
 
         return $telegramMessage;
     }

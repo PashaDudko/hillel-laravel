@@ -49,6 +49,8 @@ class OrderController extends Controller
             array_column(OrderEnum::cases(), 'value'),
         );
 
+        unset($statuses[OrderEnum::CANCELED->name]); // only user can cancel his order. Admin can reject order
+//dd($statuses);
         foreach (unserialize($order->data) as $productId => $data) {
             $product = Product::find($productId);
             $totalPrice += $data['q'] * $data['p'];
@@ -84,22 +86,29 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $result = false;
+        $valuesForUpdate = [];
 
         if ($order->status->value != OrderEnum::CONFIRMED->value && OrderEnum::CONFIRMED->value == $request['status']) {
             $result = true;
         }
 
-        $order->update([
-            'status' => OrderEnum::from($request['status'])
-        ]);
+        $valuesForUpdate['status'] = OrderEnum::from($request['status']);
 
         if (!empty($request['estimated_delivery_date'])) { // ToDo write and use Request validation
-            $order->update([
-                'estimated_delivery_date' => $request['estimated_delivery_date']
-            ]);
+            $valuesForUpdate['estimated_delivery_date'] = $request['estimated_delivery_date'];
         }
 
-        if (OrderEnum::CONFIRMED->value == $request['status']) {
+        if (OrderEnum::DELIVERED->value == $request['status']) {
+            $valuesForUpdate['delivered_at'] = now();
+        }
+
+        if (OrderEnum::RECEIVED->value == $request['status']) {
+            $valuesForUpdate['received_at'] = now();
+        }
+
+        $order->update($valuesForUpdate);
+
+        if ($order->isDirty('status') && OrderEnum::CONFIRMED->value == $request['status']) {
             ProductsQuantityHasChangedInStock::dispatch($order);
         }
 

@@ -12,6 +12,7 @@ use App\Notifications\ForAdmin\UserHasCanceledOrder;
 use App\Notifications\ForUser\YourOrderDeliveryDateIsUpdated;
 use App\Notifications\ForUser\YourOrderIsCreated;
 use App\Notifications\ForUser\YourOrderStatusIsUpdated;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Notification;
 
@@ -51,7 +52,6 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        $messageTemplate = "We are %s to inform you that your order {$order->number} will be arriving %s than expected.";
 //        $changes = $order->getDirty();
 
         if ($order->isDirty('status')) {
@@ -59,19 +59,24 @@ class OrderObserver
                 $admin = User::admin()->first();
                 Notification::send($admin, new UserHasCanceledOrder($order));
             } else {
-                Notification::send($order->user, new YourOrderStatusIsUpdated($order));
+                $message = "Your order {$order->number} status has been changed to {$order->status->name}";
+                $message .= $order->estimated_delivery_date ? "\n Expected delivery date is: {$order->estimated_delivery_date}" : "";
+
+                Notification::send($order->user, new YourOrderStatusIsUpdated($message));
             }
-        }
+        } else {
+            $messageTemplate = "
+                We are %s to inform you that your order {$order->number} will be delivered %s than expected.\n
+                New expected delivery date is: {$order->estimated_delivery_date}
+            ";
 
-        if ($order->isDirty('estimated_delivery_date')) {
-            $originalDate = $order->getOriginal('estimated_delivery_date');
-            $newDate = $order->estimated_delivery_date;
-
-            $words = $newDate->greaterThan($originalDate) ? ['HAPPY', 'EARLIER'] : ['REGRET', 'LATER'];
+            $originalDate = Carbon::parse($order->getOriginal('estimated_delivery_date'));
+            $newDate = Carbon::parse($order->estimated_delivery_date);
+            $words = $originalDate->greaterThan($newDate) ? ['HAPPY', 'EARLIER'] : ['REGRET', 'LATER'];
 
             $message = sprintf($messageTemplate, ...$words);
 
-            Notification::send($order->user, new YourOrderDeliveryDateIsUpdated($order, $message));
+            Notification::send($order->user, new YourOrderDeliveryDateIsUpdated($message));
         }
     }
 

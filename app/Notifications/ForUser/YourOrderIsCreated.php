@@ -20,7 +20,8 @@ class YourOrderIsCreated extends Notification
      */
     public function __construct(public readonly Order $order)
     {
-        //
+        // emulating delay
+        sleep(15);
     }
 
     /**
@@ -43,7 +44,7 @@ class YourOrderIsCreated extends Notification
     public function toMail(User $user): MailMessage
     {
         return (new MailMessage)
-                    ->line("Dear  $user->name !")
+                    ->line("Dear  $user->name!")
                     ->line("Your order  {$this->order->number} has been created!")
                     ->line("We will check and approve it in a minute!")
                     ->action("You can check the status on your profile page", url('http://laravel.test/profile'))
