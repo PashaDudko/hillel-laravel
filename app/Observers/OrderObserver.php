@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\Cart as CartEnum;
 use App\Enums\Order as OrderEnum;
+use App\Jobs\SendOrderNotificationsJob;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
@@ -41,10 +42,12 @@ class OrderObserver
 
         // Notify admin
         $admin = User::role('admin')->first();
-        Notification::send($admin, new NewOrderCreated($order));
+        SendOrderNotificationsJob::dispatch($order, $admin);
+//        Notification::send($admin, new NewOrderCreated($order));
 
         //Notify user
-        Notification::send($order->user, new YourOrderIsCreated($order));
+        SendOrderNotificationsJob::dispatch($order, $order->user);
+//        Notification::send($order->user, new YourOrderIsCreated($order));
     }
 
     /**
