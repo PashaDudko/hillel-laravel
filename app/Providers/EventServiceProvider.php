@@ -25,12 +25,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        OrderCreated::class => [
-            CloseCart::class,
-            SendYourOrderIsCreatedMail::class,
-            DeleteCartCookie::class,
-            SendNewOrderCreatedTelegramNotification::class,
-        ],
         ProductsQuantityHasChangedInStock::class => [
             UpdateProductsQuantityInStock::class,
         ]
